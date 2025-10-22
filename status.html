@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>待機状況管理</title>
+  <style>
+    body { font-family: sans-serif; padding: 20px; background: #fafafa; }
+    table { border-collapse: collapse; width: 100%; margin-top: 20px; }
+    th, td { border: 1px solid #ccc; padding: 6px 10px; text-align: left; }
+    button { margin-top: 10px; padding: 10px 15px; }
+  </style>
+</head>
+<body>
+  <h1>待機状況</h1>
+  <button id="refresh">更新</button>
+  <button id="next">次の人を呼ぶ</button>
+  <table id="queue">
+    <thead>
+      <tr><th>名前</th><th>状態</th><th>開始予定</th></tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadQueue() {
+      const res = await fetch('/api/status');
+      const data = await res.json();
+      const tbody = document.querySelector('#queue tbody');
+      tbody.innerHTML = '';
+      data.list.forEach(p => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${p.Name}</td><td>${p.Status}</td><td>${p.ScheduledStart}</td>`;
+        tbody.appendChild(tr);
+      });
+    }
+
+    document.getElementById('refresh').onclick = loadQueue;
+
+    document.getElementById('next').onclick = async () => {
+      if (!confirm("次の人を呼びますか？")) return;
+      const res = await fetch('/api/next', { method: 'POST' });
+      const msg = await res.json();
+      alert(msg.message || msg.error);
+      loadQueue();
+    };
+
+    loadQueue();
+  </script>
+</body>
+</html>
