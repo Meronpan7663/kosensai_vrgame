@@ -71,7 +71,7 @@ export default async function handler(req, res) {
       if (ev.type === 'follow') {
         const uid = ev.source?.userId;
         if (uid) {
-          await pushMessage(uid, [{ type:'text', text:'友だち登録ありがとうございます！フルネーム（例：山田太郎）をこのLINEに送ってください。' }]);
+          await pushMessage(uid, [{ type:'text', text:'友だち登録ありがとうございます！フルネーム（例：高専太郎）をこのLINEに送ってください。' }]);
         }
       } else if (ev.type === 'message' && ev.message?.type === 'text') {
         const text = String(ev.message.text || '').trim();
